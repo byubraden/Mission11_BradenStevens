@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Book } from './types/Book';
 
+// Book list component
 function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -31,6 +32,7 @@ function BookList() {
 
       <div className="container">
         <div className="row justify-content-center">
+            {/* Display the list of books */}
           {books.map((b) => (
             <div className="col-12 col-md-6 mb-3" key={b.bookId}>
               <div className="card">
