@@ -10,6 +10,7 @@ function CategoryFilter({
 }) {
   const [categories, setCategories] = useState<string[]>([]);
 
+  // Fetch categories from the server
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -27,6 +28,7 @@ function CategoryFilter({
     fetchCategories();
   }, []);
 
+  // Handle checkbox change
   function handleCheckboxChange({ target }: { target: HTMLInputElement }) {
     const updatedCategories = selectedCategories.includes(target.value)
       ? selectedCategories.filter((x) => x !== target.value)
@@ -34,6 +36,7 @@ function CategoryFilter({
     setSelectedCategories(updatedCategories);
   }
 
+  // Render the category filter
   return (
     <div className="category-filter">
       <h5>Book Categories </h5>
