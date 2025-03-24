@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Book } from './types/Book';
+import { Book } from '../types/Book';
+import { useNavigate } from 'react-router-dom';
+import CartSummary from './CartSummary';
 
 // Book list component
-function BookList() {
+function BookList({ selectedCategories }: { selectedCategories: string[] }) {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [pageNum, setPageNum] = useState<number>(1);
   const [totalBooks, setTotalBooks] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [sortBy, setSortBy] = useState<string>('title');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const categoryParams = selectedCategories
+        .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
+        .join('&');
+
       const response = await fetch(
-        `https://localhost:5000/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}`
+        `https://localhost:5000/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}${selectedCategories.length ? `&${categoryParams}` : ''}`
       );
       const data = await response.json();
       setBooks(data.books);
@@ -22,17 +29,31 @@ function BookList() {
     };
 
     fetchProjects();
-  }, [pageSize, pageNum, totalBooks, sortBy]);
+  }, [pageSize, pageNum, totalBooks, sortBy, selectedCategories]);
 
   return (
     <>
+      <CartSummary />
       <h1>Book List</h1>
+      <br />
 
+      {/* Sort by dropdown */}
+      <div className="d-flex justify-content-center my-3">
+        <label className="me-2 fw-bold">Sort by:</label>
+        <select
+          className="form-select w-auto"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="none">None (Default Order)</option>
+          <option value="title">Title (A-Z)</option>
+        </select>
+      </div>
       <br />
 
       <div className="container">
         <div className="row justify-content-center">
-            {/* Display the list of books */}
+          {/* Display the list of books */}
           {books.map((b) => (
             <div className="col-12 col-md-6 mb-3" key={b.bookId}>
               <div className="card">
@@ -61,6 +82,15 @@ function BookList() {
                       <strong>Price:</strong> {b.price}
                     </li>
                   </ul>
+
+                  <button
+                    className="btn btn-success"
+                    onClick={() =>
+                      navigate(`/addBook/${b.bookId}/${b.title}/${b.price}`)
+                    }
+                  >
+                    Add Book
+                  </button>
                 </div>
               </div>
             </div>
@@ -68,7 +98,9 @@ function BookList() {
         </div>
       </div>
 
+      {/* Pagination */}
       <div className="d-flex justify-content-center align-items-center my-3">
+        {/* Previous button */}
         <button
           className="btn btn-primary me-2"
           disabled={pageNum === 1}
@@ -76,6 +108,8 @@ function BookList() {
         >
           Previous
         </button>
+
+        {/* Page number buttons */}
 
         <div className="btn-group">
           {[...Array(totalPages)].map((_, index) => (
@@ -90,6 +124,7 @@ function BookList() {
           ))}
         </div>
 
+        {/* Next button */}
         <button
           className="btn btn-primary ms-2"
           disabled={pageNum === totalPages}
@@ -99,6 +134,7 @@ function BookList() {
         </button>
       </div>
 
+      {/* Results per page dropdown */}
       <div className="d-flex justify-content-center my-3">
         <label className="me-2 fw-bold">Results per page:</label>
         <select
@@ -112,18 +148,6 @@ function BookList() {
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="20">20</option>
-        </select>
-      </div>
-
-      <div className="d-flex justify-content-center my-3">
-        <label className="me-2 fw-bold">Sort by:</label>
-        <select
-          className="form-select w-auto"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="none">None (Default Order)</option>
-          <option value="title">Title (A-Z)</option>
         </select>
       </div>
     </>
