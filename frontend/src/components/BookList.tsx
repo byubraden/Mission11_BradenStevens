@@ -25,6 +25,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
         setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
       } catch (error) {
         setError((error as Error).message);
+        console.error('Error fetching books:', error);
       } finally {
         setLoading(false);
       }
@@ -35,6 +36,12 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
 
   return (
     <>
+      {/* Display loading message while fetching data */}
+      {loading && <p>Loading...</p>}
+
+      {/* Display error message if an error occurs */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
       <CartSummary />
       <h1>Book List</h1>
       <br />
