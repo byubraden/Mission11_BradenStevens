@@ -2,34 +2,36 @@ import { useEffect, useState } from 'react';
 import { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom';
 import CartSummary from './CartSummary';
+import { fetchBooks } from '../api/BooksApi';
+import Pagination from './Pagination';
 
 // Book list component
 function BookList({ selectedCategories }: { selectedCategories: string[] }) {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [pageNum, setPageNum] = useState<number>(1);
-  const [totalBooks, setTotalBooks] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [sortBy, setSortBy] = useState<string>('title');
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      const categoryParams = selectedCategories
-        .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
-        .join('&');
-
-      const response = await fetch(
-        `https://localhost:5000/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}${selectedCategories.length ? `&${categoryParams}` : ''}`
-      );
-      const data = await response.json();
-      setBooks(data.books);
-      setTotalBooks(data.totalNumBooks);
-      setTotalPages(Math.ceil(totalBooks / pageSize));
+    const loadBooks = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchBooks(pageSize, pageNum, selectedCategories);
+        setBooks(data.books);
+        setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchProjects();
-  }, [pageSize, pageNum, totalBooks, sortBy, selectedCategories]);
+    loadBooks();
+  }, [pageSize, pageNum, sortBy, selectedCategories]);
 
   return (
     <>
@@ -98,58 +100,16 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="d-flex justify-content-center align-items-center my-3">
-        {/* Previous button */}
-        <button
-          className="btn btn-primary me-2"
-          disabled={pageNum === 1}
-          onClick={() => setPageNum(pageNum - 1)}
-        >
-          Previous
-        </button>
-
-        {/* Page number buttons */}
-
-        <div className="btn-group">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index + 1}
-              className={`btn ${pageNum === index + 1 ? 'btn-dark' : 'btn-outline-dark'}`}
-              onClick={() => setPageNum(index + 1)}
-              disabled={pageNum === index + 1}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-
-        {/* Next button */}
-        <button
-          className="btn btn-primary ms-2"
-          disabled={pageNum === totalPages}
-          onClick={() => setPageNum(pageNum + 1)}
-        >
-          Next
-        </button>
-      </div>
-
-      {/* Results per page dropdown */}
-      <div className="d-flex justify-content-center my-3">
-        <label className="me-2 fw-bold">Results per page:</label>
-        <select
-          className="form-select w-auto"
-          value={pageSize}
-          onChange={(p) => {
-            setPageSize(Number(p.target.value));
-            setPageNum(1);
-          }}
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-        </select>
-      </div>
+      <Pagination
+        currentPage={pageNum}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        onPageChange={setPageNum}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
+          setPageNum(1);
+        }}
+      />
     </>
   );
 }
