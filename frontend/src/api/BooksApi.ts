@@ -5,8 +5,14 @@ interface FetchBooksResponse {
   totalNumBooks: number;
 }
 
+{
+  /* The api url */
+}
 const API_URL = 'https://bookstore-stevens-backend.azurewebsites.net/Book';
 
+{
+  /* Fetch books from the server */
+}
 export const fetchBooks = async (
   pageSize: number,
   pageNum: number,
@@ -32,6 +38,10 @@ export const fetchBooks = async (
   }
 };
 
+{
+  /* Add a new book */
+}
+
 export const addBook = async (newBook: Book): Promise<Book> => {
   try {
     const response = await fetch(`${API_URL}/AddBook`, {
@@ -53,6 +63,9 @@ export const addBook = async (newBook: Book): Promise<Book> => {
   }
 };
 
+{
+  /* Update an existing book */
+}
 export const updateBook = async (
   bookId: number,
   updatedBook: Book
@@ -78,6 +91,10 @@ export const updateBook = async (
     throw error;
   }
 };
+
+{
+  /* Delete a book */
+}
 
 export const deleteBook = async (bookId: number): Promise<void> => {
   try {

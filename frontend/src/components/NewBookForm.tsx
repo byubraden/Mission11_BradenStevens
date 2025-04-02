@@ -7,6 +7,7 @@ interface NewBookFormProps {
   onCancel: () => void;
 }
 
+// The NewBookForm component allows the user to add a new book to the system
 const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
   const [formData, setFormData] = useState<Book>({
     bookId: 0,
@@ -30,6 +31,7 @@ const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
     onSuccess();
   };
 
+  // Render the new book form
   return (
     <form onSubmit={handleSubmit}>
       <h2>Add New Book</h2>

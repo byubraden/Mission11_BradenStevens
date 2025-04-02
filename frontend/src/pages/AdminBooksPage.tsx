@@ -15,6 +15,7 @@ const AdminBooksPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
+  // Fetch books when the component mounts or when pageSize/pageNum changes
   useEffect(() => {
     const loadBooks = async () => {
       try {
@@ -48,6 +49,9 @@ const AdminBooksPage = () => {
   if (loading) return <p>Loading Books...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
+  {
+    /* Render the admin books page */
+  }
   return (
     <div>
       <h1>Admin - Books</h1>
@@ -86,6 +90,8 @@ const AdminBooksPage = () => {
         />
       )}
 
+      {/* Table to display the list of books */}
+
       <table className="table table-bordered table-striped">
         <thead className="table-dark">
           <tr>
@@ -114,6 +120,7 @@ const AdminBooksPage = () => {
               <td>{b.pageCount}</td>
               <td>{b.price}</td>
 
+              {/* Edit and Delete buttons */}
               <td>
                 <button
                   className="btn btn-primary btn-sm w-100 mb-1"
@@ -133,6 +140,7 @@ const AdminBooksPage = () => {
         </tbody>
       </table>
 
+      {/* Pagination component */}
       <Pagination
         currentPage={pageNum}
         totalPages={totalPages}

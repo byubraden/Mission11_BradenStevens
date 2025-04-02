@@ -50,6 +50,7 @@ namespace BookStore.API.Controllers
             return Ok(returnObject);
         }
         
+        //Get request for the book categories
         [HttpGet("BookCategories")]
         public IActionResult GetProjectTypes()
         {
@@ -60,7 +61,9 @@ namespace BookStore.API.Controllers
             
             return Ok(bookCategories);
         }
-        
+
+
+        // Post request for adding a book
         [HttpPost("AddBook")]
         public IActionResult AddProject([FromBody] Book newBook)
         {
@@ -68,6 +71,8 @@ namespace BookStore.API.Controllers
             _bookstoreContext.SaveChanges();
             return Ok(newBook);
         }
+
+        //Put request for updating a book
 
         [HttpPut("UpdateBook/{bookId}")]
         public IActionResult UpdateBook(int bookId, [FromBody] Book updatedBook)
@@ -87,6 +92,8 @@ namespace BookStore.API.Controllers
 
             return Ok(existingProject);
         }
+
+        //Delete request for deleting a book
 
         [HttpDelete("DeleteBook/{bookId}")]
         public IActionResult DeleteBook(int bookId)

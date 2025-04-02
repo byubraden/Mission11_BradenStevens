@@ -60,6 +60,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
       </div>
       <br />
 
+      {/* Display the books */}
       <div className="container">
         <div className="row justify-content-center">
           {/* Display the list of books */}
@@ -107,6 +108,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
         </div>
       </div>
 
+      {/* Pagination component */}
       <Pagination
         currentPage={pageNum}
         totalPages={totalPages}

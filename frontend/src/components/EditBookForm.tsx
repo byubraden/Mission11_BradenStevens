@@ -8,6 +8,7 @@ interface EditBookFormProps {
   onCancel: () => void;
 }
 
+// the EditBookForm component allows the user to edit an existing book in the system
 const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
   const [formData, setFormData] = useState<Book>({ ...book });
 
@@ -21,6 +22,7 @@ const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
     onSuccess();
   };
 
+  // Render the edit book form
   return (
     <form onSubmit={handleSubmit}>
       <h2>Edit Book</h2>
